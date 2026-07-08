@@ -11,7 +11,7 @@ import SwiftUI
 struct List_DownApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            BasicListView()
         }
     }
 }

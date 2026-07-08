@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct BasicListView: View {
     @State private var fruitsArr: [String] = [
         "Apples",
         "Oranges",
@@ -26,22 +26,20 @@ struct ContentView: View {
             List {
                 ForEach(fruitsArr, id: \.self) { fruit in
                     Text(fruit)
-                    
                 }
                 .onDelete(perform: swipeToDelete)
             }
             .navigationTitle("Fruits")
-
         }
     }
     private func swipeToDelete(at offset: IndexSet) {
         fruitsArr.remove(atOffsets: offset)
-        print(fruitsArr)
+        //        print(fruitsArr)  //  uncomment this to see changes in our 'fruitArr' array
     }
 }
 
 
 
 #Preview {
-    ContentView()
+    BasicListView()
 }
