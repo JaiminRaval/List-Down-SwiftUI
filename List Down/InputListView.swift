@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct InputListView: View {
-    
+    //  Creating/accessing UserDefaults via @AppStorage
+    @AppStorage("firstName") private var userName: String = "jaimin"
     @State private var fruitsArr: [String] = [
         "Apples",
         "Oranges",
@@ -30,8 +31,11 @@ struct InputListView: View {
                         Text(fruit)
                     }
                     .onDelete(perform: swipeToDelete)
+                    .onTapGesture {
+                        print("tapped")
+                    }
                 }
-                .navigationTitle("Fruits")
+                .navigationTitle(userName.isEmpty ? "Fruits" : "Welcome \(userName)")
                 TextField("Eg: Orange", text: $inputText)
                     .onSubmit {
                         if !inputText.isEmpty {
