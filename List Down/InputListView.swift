@@ -10,6 +10,8 @@ import SwiftUI
 struct InputListView: View {
     //  Creating/accessing UserDefaults via @AppStorage
     @AppStorage("firstName") private var userName: String = "jaimin"
+    // This is the SOURCE OF TRUTH for the fruits array.
+    // @State means SwiftUI owns and watches this value here, in this view.
     @State private var fruitsArr: [String] = [
         "Apples",
         "Oranges",
@@ -27,29 +29,40 @@ struct InputListView: View {
         NavigationStack {
             VStack {
                 List {
-                    ForEach(fruitsArr, id: \.self) { fruit in
-                        Text(fruit)
+                    // We use indices here (instead of ForEach(fruitsArr, id: \.self))
+                    // because to create a @Binding to a single array element,
+                    // we need a way to point back at "fruitsArr[i]" specifically.
+                    // You can't make a Binding out of a value handed to you by ForEach directly.
+                    ForEach(fruitsArr.indices, id: \.self) { index in
+                        NavigationLink {
+                            // $fruitsArr[index] creates a Binding<String> that points
+                            // directly at that element inside fruitsArr.
+                            // Passing $fruitsArr[index] instead of fruitsArr[index]
+                            // means DetailView can WRITE BACK to this exact array slot.
+                            
+                            
+                            DetailView(fruitName: $fruitsArr[index])
+                        } label: {
+                            Text(fruitsArr[index])
+                        }
                     }
                     .onDelete(perform: swipeToDelete)
-                    .onTapGesture {
-                        print("tapped")
-                    }
                 }
                 .navigationTitle(userName.isEmpty ? "Fruits" : "Welcome \(userName)")
+                
                 TextField("Eg: Orange", text: $inputText)
                     .onSubmit {
                         if !inputText.isEmpty {
                             fruitsArr.append(inputText)
-                            print(fruitsArr)
                             inputText = ""
                         }
                     }
             }
         }
     }
+    
     private func swipeToDelete(at offset: IndexSet) {
         fruitsArr.remove(atOffsets: offset)
-        //        print(fruitsArr)  //  uncomment this to see changes in our 'fruitArr' array
     }
 }
 
